@@ -3,7 +3,7 @@ Well-known wc utility written in Go. Simplified version.
 
 # Installation
 ```bash
-go get github.com/avegner/wc
+GOFLAGS='-ldflags=-s' go get github.com/avegner/wc
 ```
 
 # Usage
@@ -27,6 +27,14 @@ $(which time) -v wc -mclw <file>...
 ```
 * run go wc:
 ```bash
-$(which time) -v <path-to-go-version>/wc <file>...
+$(which time) -v $(go env GOPATH)/wc <file>...
 ```
 * compare mem and cpu usage stats
+
+# UPX for Go bins
+Static Go binaries are significantly larger than C ones. Use UPX to reduce binary size:
+```bash
+sudo apt update
+sudo apt install -y upx
+upx -9 -o $(go env GOPATH)/wc.upx $(go env GOPATH)/wc
+```
