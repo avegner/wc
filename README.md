@@ -27,7 +27,7 @@ $(which time) -v wc -mclw <file>...
 ```
 * run go wc:
 ```bash
-$(which time) -v $(go env GOPATH)/wc <file>...
+$(which time) -v $(go env GOPATH)/bin/wc <file>...
 ```
 * compare mem and cpu usage stats
 
@@ -36,5 +36,5 @@ Static Go binaries are significantly larger than C ones. Use UPX to reduce binar
 ```bash
 sudo apt update
 sudo apt install -y upx
-upx -9 -o $(go env GOPATH)/wc.upx $(go env GOPATH)/wc
+upx -9 -o $(go env GOPATH)/bin/wc.upx $(go env GOPATH)/bin/wc
 ```
