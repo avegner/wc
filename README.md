@@ -38,3 +38,16 @@ sudo apt update
 sudo apt install -y upx
 upx -9 -o $(go env GOPATH)/bin/wc.upx $(go env GOPATH)/bin/wc
 ```
+
+# Stats
+Wall clock
+
+Test | wc -mclw | Go wc | Go wc.upx
+--- | --- | --- | ---
+20 x 320.4 MiB UTF-8 files | 42.76 s | 41.23 s | 41.74 s
+
+Maximum RSS
+
+Test | wc -mclw | Go wc | Go wc.upx
+--- | --- | --- | ---
+20 x 320.4 MiB UTF-8 files | 2100 KiB | 2568 KiB | 2576 KiB
