@@ -3,7 +3,7 @@ Well-known wc utility written in Go. Simplified version.
 
 # Installation
 ```bash
-GOFLAGS='-ldflags=-s' go get github.com/avegner/wc
+GOFLAGS='-ldflags=-s -trimpath' go get github.com/avegner/wc
 ```
 
 # Usage
