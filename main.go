@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"unicode"
+
+	"github.com/avegner/wc/workpool"
 )
 
 var mlog = log.New(os.Stderr, "", 0)
@@ -59,41 +61,47 @@ func run() error {
 		return errUsage
 	}
 
+	wp, err := workpool.New()
+	if err != nil {
+		return err
+	}
+	defer wp.Close()
+
 	filePaths := os.Args[1:]
+	total := stats{}
+	errc := make(chan error)
 	resc := make(chan *statsResult)
+
+	go func() {
+		var err error
+		for got := 0; got < len(filePaths); got++ {
+			res := <-resc
+			if res.err == nil {
+				total.lines += res.st.lines
+				total.words += res.st.words
+				total.bytes += res.st.bytes
+				total.chars += res.st.chars
+				mlog.Printf("%v %s", res.st, res.filePath)
+			} else {
+				err = errFailed
+				mlog.Printf("err: %v", res.err)
+			}
+		}
+		if len(filePaths) > 1 {
+			mlog.Printf("%v total", total)
+		}
+		errc <- err
+	}()
 
 	for _, fp := range filePaths {
 		p := fp
-		go func() {
+		_ = wp.Add(func() {
 			st, err := getStats(p)
 			resc <- &statsResult{st, p, err}
-		}()
+		})
 	}
 
-	var err error
-	total := stats{}
-	got := 0
-
-	for res := range resc {
-		if res.err == nil {
-			total.lines += res.st.lines
-			total.words += res.st.words
-			total.bytes += res.st.bytes
-			total.chars += res.st.chars
-			mlog.Printf("%v %s", res.st, res.filePath)
-		} else {
-			err = errFailed
-			mlog.Printf("err: %v", res.err)
-		}
-		if got++; got == len(filePaths) {
-			close(resc)
-		}
-	}
-	if len(filePaths) > 1 {
-		mlog.Printf("%v total", total)
-	}
-
-	return err
+	return <-errc
 }
 
 func getStats(filePath string) (*stats, error) {

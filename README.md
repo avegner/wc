@@ -39,15 +39,23 @@ sudo apt install -y upx
 upx -9 -o $(go env GOPATH)/bin/wc.upx $(go env GOPATH)/bin/wc
 ```
 
+# Output Format
+```
+<lines> <words> <chars> <bytes> <file-path>
+...
+```
+
 # Stats
 Wall clock
 
 Test | wc -mclw | Go wc | Go wc.upx
 --- | --- | --- | ---
-20 x 320.4 MiB UTF-8 files | 42.76 s | 41.23 s | 41.74 s
+1 x 320.4 MiB UTF-8 file | 2.14 s | 3.69 s | 3.77 s
+10 x 320.4 MiB UTF-8 files | 21.51 s | 20.59 s | 20.65 s
 
 Maximum RSS
 
 Test | wc -mclw | Go wc | Go wc.upx
 --- | --- | --- | ---
-20 x 320.4 MiB UTF-8 files | 2100 KiB | 2568 KiB | 2576 KiB
+1 x 320.4 MiB UTF-8 file | 2220 KiB | 2132 KiB | 2168 KiB
+10 x 320.4 MiB UTF-8 files | 2228 KiB | 2384 KiB | 2424 KiB
